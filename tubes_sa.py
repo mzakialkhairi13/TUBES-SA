@@ -32,7 +32,10 @@ def maxProfit(prices):
 prices = [80, 120, 65, 200, 430, 520, 600 ]
 print('max profit: ', maxProfit(prices))
 
-"""Greedy"""
+"""Greedy
+
+Simple
+"""
 
 def maxProfit(prices):
   profit = 0
@@ -42,3 +45,64 @@ def maxProfit(prices):
 
 prices = [80, 120, 65, 200, 430, 520, 600 ]
 print('max profit: ', maxProfit(prices))
+
+def maxProfit(n, k, prices):
+	ans = 0
+	buy = 0
+	sell = 0
+	
+	transaction = []
+	profits = []
+
+	while (sell < n):
+		buy = sell
+
+		while (buy < n - 1 and prices[buy] >= prices[buy + 1]):
+			buy += 1
+
+		sell = buy + 1
+
+		while (sell < n and prices[sell] >= prices[sell - 1]):
+			sell += 1
+
+		while (len(transaction) !=0 and prices[buy] < prices[transaction[len(transaction)-1][0]]):
+			p = transaction[len(transaction)-1]
+
+			profits.append(prices[p[1] - 1] - prices[p[0]])
+
+			transaction.remove(transaction[len(transaction)-1])
+
+		profits.sort(reverse=True)
+  
+		while (len(transaction)!=0 and prices[sell - 1] > prices[transaction[len(transaction)-1][1] - 1]):
+			p = transaction[len(transaction)-1]
+
+			profits.append(prices[p[1] - 1] - prices[buy])
+			buy = p[0]
+
+			transaction.remove(transaction[len(transaction)-1])
+
+		transaction.append([buy, sell])
+	
+	profits.sort(reverse=True)
+
+	while (len(transaction) != 0):
+		profits.append(prices[transaction[len(transaction)-1][1]- 1]-prices[transaction[len(transaction)-1][0]])
+		transaction.remove(transaction[len(transaction)-1])
+
+	profits.sort(reverse=True)
+
+	while (k!=0 and len(profits)!=0):
+		ans += profits[0]
+		profits.remove(profits[0])
+		k -= 1
+
+	return ans
+
+
+if __name__ == '__main__':
+	k = 3
+	prices = [80, 120, 65, 200, 430, 520, 600 ]
+	n = len(prices)
+
+	print("Maximum profit is",maxProfit(n, k, prices))
